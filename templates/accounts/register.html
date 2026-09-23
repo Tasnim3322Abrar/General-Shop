@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Create Account — UniversalShop
+{% endblock %}
+
+{% block content %}
+
+<section class="auth-page">
+
+    <div class="auth-card">
+
+        <div class="auth-header">
+
+            <span class="section-label">
+                JOIN UNIVERSALSHOP
+            </span>
+
+            <h1>
+                Create account
+            </h1>
+
+            <p>
+                Create an account to start shopping.
+            </p>
+
+        </div>
+
+
+        <form method="post" class="auth-form">
+
+            {% csrf_token %}
+
+            {% for field in form %}
+
+                <div class="form-field">
+
+                    <label for="{{ field.id_for_label }}">
+                        {{ field.label }}
+                    </label>
+
+                    {{ field }}
+
+                    {% if field.help_text %}
+
+                        <div class="field-help">
+                            {{ field.help_text|safe }}
+                        </div>
+
+                    {% endif %}
+
+                    {% for error in field.errors %}
+
+                        <div class="field-error">
+                            {{ error }}
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            {% endfor %}
+
+
+            <button
+                type="submit"
+                class="button button-primary auth-button"
+            >
+                Create Account →
+            </button>
+
+        </form>
+
+
+        <div class="auth-footer">
+
+            <span>
+                Already have an account?
+            </span>
+
+            <a href="{% url 'login' %}">
+                Sign in
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

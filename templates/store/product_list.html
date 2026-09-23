@@ -1,0 +1,311 @@
+{% extends "base.html" %}
+
+{% block title %}Shop — UniversalShop{% endblock %}
+
+{% block content %}
+
+<section class="shop-page">
+
+    <div class="container">
+
+        <!-- Page Header -->
+        <div class="shop-header">
+
+            <div>
+                <span class="section-label">OUR STORE</span>
+
+                <h1>Shop Products</h1>
+
+                <p>
+                    Discover products from our collection.
+                </p>
+            </div>
+
+        </div>
+
+
+        <!-- Search + Sort -->
+        <form method="get" class="shop-toolbar">
+
+            <div class="search-box">
+                <span>⌕</span>
+
+                <input
+                    type="text"
+                    name="q"
+                    value="{{ search_query }}"
+                    placeholder="Search products..."
+                >
+            </div>
+
+            <select name="sort" onchange="this.form.submit()">
+
+                <option value="">
+                    Latest
+                </option>
+
+                <option
+                    value="price_low"
+                    {% if request.GET.sort == "price_low" %}selected{% endif %}
+                >
+                    Price: Low to High
+                </option>
+
+                <option
+                    value="price_high"
+                    {% if request.GET.sort == "price_high" %}selected{% endif %}
+                >
+                    Price: High to Low
+                </option>
+
+                <option
+                    value="name"
+                    {% if request.GET.sort == "name" %}selected{% endif %}
+                >
+                    Name
+                </option>
+
+            </select>
+
+            <button type="submit" class="button button-primary">
+                Search
+            </button>
+
+        </form>
+
+
+        <!-- Main Shop Layout -->
+        <div class="shop-layout">
+
+
+            <!-- Filters -->
+            <aside class="shop-sidebar">
+
+                <div class="filter-header">
+                    <h3>Filters</h3>
+
+                    <a href="{% url 'product_list' %}">
+                        Clear
+                    </a>
+                </div>
+
+
+                <!-- Categories -->
+                <div class="filter-section">
+
+                    <h4>Categories</h4>
+
+                    {% for category in categories %}
+
+                    <a
+                        href="?category={{ category.slug }}"
+                        class="filter-link"
+                    >
+                        <span>{{ category.name }}</span>
+                    </a>
+
+                    {% empty %}
+
+                    <p class="filter-empty">
+                        No categories available.
+                    </p>
+
+                    {% endfor %}
+
+                </div>
+
+
+                <!-- Brands -->
+                <div class="filter-section">
+
+                    <h4>Brands</h4>
+
+                    {% for brand in brands %}
+
+                    <a
+                        href="?brand={{ brand.slug }}"
+                        class="filter-link"
+                    >
+                        <span>{{ brand.name }}</span>
+                    </a>
+
+                    {% empty %}
+
+                    <p class="filter-empty">
+                        No brands available.
+                    </p>
+
+                    {% endfor %}
+
+                </div>
+
+
+                <!-- Price -->
+                <div class="filter-section">
+
+                    <h4>Price Range</h4>
+
+                    <form method="get">
+
+                        {% if request.GET.q %}
+                            <input
+                                type="hidden"
+                                name="q"
+                                value="{{ request.GET.q }}"
+                            >
+                        {% endif %}
+
+                        <div class="price-inputs">
+
+                            <input
+                                type="number"
+                                name="min_price"
+                                placeholder="Min"
+                                value="{{ request.GET.min_price }}"
+                            >
+
+                            <span>—</span>
+
+                            <input
+                                type="number"
+                                name="max_price"
+                                placeholder="Max"
+                                value="{{ request.GET.max_price }}"
+                            >
+
+                        </div>
+
+                        <button
+                            type="submit"
+                            class="filter-button"
+                        >
+                            Apply
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </aside>
+
+
+            <!-- Products -->
+            <div class="shop-results">
+
+                <div class="results-header">
+
+                    <p>
+                        {% if page_obj.paginator.count %}
+                            {{ page_obj.paginator.count }}
+                            product{{ page_obj.paginator.count|pluralize }}
+                            found
+                        {% else %}
+                            No products found
+                        {% endif %}
+                    </p>
+
+                </div>
+
+
+                {% if page_obj.object_list %}
+
+                <div class="product-grid">
+
+                    {% for product in page_obj %}
+
+                        {% include "components/product_card.html" %}
+
+                    {% endfor %}
+
+                </div>
+
+
+                <!-- Pagination -->
+                {% if page_obj.has_other_pages %}
+
+                <div class="pagination">
+
+                    {% if page_obj.has_previous %}
+
+                        <a
+                            href="?page={{ page_obj.previous_page_number }}"
+                            class="page-arrow"
+                        >
+                            ←
+                        </a>
+
+                    {% endif %}
+
+
+                    {% for number in page_obj.paginator.page_range %}
+
+                        {% if page_obj.number == number %}
+
+                            <span class="page-number active">
+                                {{ number }}
+                            </span>
+
+                        {% else %}
+
+                            <a
+                                href="?page={{ number }}"
+                                class="page-number"
+                            >
+                                {{ number }}
+                            </a>
+
+                        {% endif %}
+
+                    {% endfor %}
+
+
+                    {% if page_obj.has_next %}
+
+                        <a
+                            href="?page={{ page_obj.next_page_number }}"
+                            class="page-arrow"
+                        >
+                            →
+                        </a>
+
+                    {% endif %}
+
+                </div>
+
+                {% endif %}
+
+
+                {% else %}
+
+                <div class="empty-shop">
+
+                    <div class="empty-icon">
+                        ∅
+                    </div>
+
+                    <h2>No products found</h2>
+
+                    <p>
+                        Try changing your search or filters.
+                    </p>
+
+                    <a
+                        href="{% url 'product_list' %}"
+                        class="button button-primary"
+                    >
+                        View All Products
+                    </a>
+
+                </div>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

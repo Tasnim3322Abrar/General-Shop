@@ -1,0 +1,236 @@
+{% extends "base.html" %}
+
+{% block title %}
+    {{ product.name }} — UniversalShop
+{% endblock %}
+
+{% block content %}
+
+<section class="product-detail-page">
+
+    <div class="container">
+
+        <!-- Breadcrumb -->
+
+        <div class="breadcrumb">
+
+            <a href="{% url 'home' %}">
+                Home
+            </a>
+
+            <span>/</span>
+
+            <a href="{% url 'product_list' %}">
+                Shop
+            </a>
+
+            <span>/</span>
+
+            <span>{{ product.name }}</span>
+
+        </div>
+
+
+        <div class="product-detail-grid">
+
+            <!-- IMAGE SIDE -->
+
+            <div class="detail-gallery">
+
+                <div class="detail-main-image">
+
+                    {% with image=product.images.first %}
+
+                        {% if image %}
+
+                            <img
+                                src="{{ image.image.url }}"
+                                alt="{{ image.alt_text|default:product.name }}"
+                            >
+
+                        {% else %}
+
+                            <div class="detail-placeholder">
+                                No Image
+                            </div>
+
+                        {% endif %}
+
+                    {% endwith %}
+
+                </div>
+
+
+                {% if product.images.all %}
+
+                    <div class="detail-thumbnails">
+
+                        {% for image in product.images.all %}
+
+                            <div class="detail-thumbnail">
+
+                                <img
+                                    src="{{ image.image.url }}"
+                                    alt="{{ image.alt_text|default:product.name }}"
+                                >
+
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- INFORMATION SIDE -->
+
+            <div class="product-detail-info">
+
+                <span class="product-category">
+                    {{ product.category.name }}
+                </span>
+
+                <h1>
+                    {{ product.name }}
+                </h1>
+
+
+                {% if product.brand %}
+
+                    <p class="detail-brand">
+                        {{ product.brand.name }}
+                    </p>
+
+                {% endif %}
+
+
+                <div class="detail-price">
+
+                    {{ product.base_price }}
+
+                    <span>BDT</span>
+
+                </div>
+
+
+                {% if product.description %}
+
+                    <div class="detail-description">
+
+                        <h3>
+                            Description
+                        </h3>
+
+                        <p>
+                            {{ product.description }}
+                        </p>
+
+                    </div>
+
+                {% endif %}
+
+
+                <!-- VARIANTS -->
+
+                {% if product.variants.all %}
+
+                    <div class="variant-section">
+
+                        <h3>
+                            Select an option
+                        </h3>
+
+                        <div class="variant-list">
+
+                            {% for variant in product.variants.all %}
+
+                                <label class="variant-option">
+
+                                    <input
+                                        type="radio"
+                                        name="variant"
+                                        value="{{ variant.id }}"
+                                    >
+
+                                    <span>
+                                        {{ variant.name }}
+                                    </span>
+
+                                    <strong>
+                                        {{ variant.price }} BDT
+                                    </strong>
+
+                                </label>
+
+                            {% endfor %}
+
+                        </div>
+
+                    </div>
+
+                {% endif %}
+
+
+                <!-- ACTION -->
+
+                <div class="detail-actions">
+
+                    <div class="quantity-control">
+
+                        <button type="button">
+                            −
+                        </button>
+
+                        <span>
+                            1
+                        </span>
+
+                        <button type="button">
+                            +
+                        </button>
+
+                    </div>
+
+
+                    <a
+                        href="/cart/"
+                        class="button button-primary add-cart-button"
+                    >
+                        Add to Cart
+                        <span>→</span>
+                    </a>
+
+                </div>
+
+
+                <div class="detail-features">
+
+                    <div>
+                        <strong>✓</strong>
+                        <span>Quality products</span>
+                    </div>
+
+                    <div>
+                        <strong>⚡</strong>
+                        <span>Simple shopping</span>
+                    </div>
+
+                    <div>
+                        <strong>↻</strong>
+                        <span>Easy ordering</span>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

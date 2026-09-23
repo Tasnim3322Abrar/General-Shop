@@ -1,0 +1,58 @@
+<a href="{% url 'product_detail' product.slug %}" class="product-card">
+
+    <div class="product-image">
+
+        {% with image=product.images.first %}
+
+            {% if image %}
+                <img
+                    src="{{ image.image.url }}"
+                    alt="{{ image.alt_text|default:product.name }}"
+                >
+            {% else %}
+                <div class="image-placeholder">
+                    No Image
+                </div>
+            {% endif %}
+
+        {% endwith %}
+
+        {% if product.is_featured %}
+            <span class="product-badge">
+                Featured
+            </span>
+        {% endif %}
+
+    </div>
+
+    <div class="product-info">
+
+        <span class="product-category">
+            {{ product.category.name }}
+        </span>
+
+        <h3>
+            {{ product.name }}
+        </h3>
+
+        {% if product.brand %}
+            <p class="product-brand">
+                {{ product.brand.name }}
+            </p>
+        {% endif %}
+
+        <div class="product-bottom">
+
+            <strong>
+                {{ product.base_price }} BDT
+            </strong>
+
+            <span class="product-arrow">
+                →
+            </span>
+
+        </div>
+
+    </div>
+
+</a>

@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block title %}
+    My Account — UniversalShop
+{% endblock %}
+
+{% block content %}
+
+<section class="account-page">
+
+    <div class="container">
+
+        <div class="account-header">
+
+            <div>
+
+                <span class="section-label">
+                    MY ACCOUNT
+                </span>
+
+                <h1>
+                    Welcome, {{ user.username }}
+                </h1>
+
+                <p>
+                    Manage your account and shopping activity.
+                </p>
+
+            </div>
+
+
+            <a
+                href="{% url 'logout' %}"
+                class="button button-secondary"
+            >
+                Logout
+            </a>
+
+        </div>
+
+
+        <div class="account-grid">
+
+            <div class="account-card">
+
+                <div class="account-card-icon">
+                    ◉
+                </div>
+
+                <h3>
+                    Profile
+                </h3>
+
+                <p>
+                    Manage your personal account information.
+                </p>
+
+                <span class="account-card-link">
+                    Coming soon →
+                </span>
+
+            </div>
+
+
+            <div class="account-card">
+
+                <div class="account-card-icon">
+                    ▣
+                </div>
+
+                <h3>
+                    Orders
+                </h3>
+
+                <p>
+                    View your previous orders and their status.
+                </p>
+
+                <span class="account-card-link">
+                    Coming soon →
+                </span>
+
+            </div>
+
+
+            <div class="account-card">
+
+                <div class="account-card-icon">
+                    ⌖
+                </div>
+
+                <h3>
+                    Addresses
+                </h3>
+
+                <p>
+                    Manage your delivery addresses.
+                </p>
+
+                <span class="account-card-link">
+                    Coming soon →
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

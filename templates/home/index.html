@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Home - Universal Shop
+{% endblock %}
+
+{% block content %}
+
+<section class="hero">
+
+    <div class="container">
+
+        <div class="hero-content">
+
+            <h1>
+                Everything you need,
+                <span>in one place.</span>
+            </h1>
+
+            <p>
+                Discover quality products from a modern,
+                flexible online store built for every kind
+                of business.
+            </p>
+
+            <div class="hero-actions">
+
+                <a
+                    href="{% url 'product_list' %}"
+                    class="btn btn-primary"
+                >
+                    Explore Products
+                </a>
+
+                {% if not user.is_authenticated %}
+
+                    <a
+                        href="{% url 'register' %}"
+                        class="btn btn-outline"
+                    >
+                        Create Account
+                    </a>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+{% if featured_products %}
+
+<section class="section">
+
+    <div class="container">
+
+        <div class="section-header">
+
+            <h2>
+                Featured Products
+            </h2>
+
+            <p>
+                Explore some of our selected products.
+            </p>
+
+        </div>
+
+
+        <div class="product-grid">
+
+            {% for product in featured_products %}
+                {% include "components/product_card.html" %}
+
+                <article class="product-card">
+
+                    <a
+                        href="{% url 'product_detail' product.slug %}"
+                    >
+
+                        <div class="product-image">
+
+                            {% with image=product.images.first %}
+
+                                {% if image %}
+
+                                    <img
+                                        src="{{ image.image.url }}"
+                                        alt="{{ image.alt_text|default:product.name }}"
+                                    >
+
+                                {% else %}
+
+                                    <div class="product-placeholder">
+                                        No image
+                                    </div>
+
+                                {% endif %}
+
+                            {% endwith %}
+
+                        </div>
+
+                    </a>
+
+
+                    <div class="product-info">
+
+                        <div class="product-category">
+                            {{ product.category.name }}
+                        </div>
+
+                        <h3 class="product-name">
+
+                            <a
+                                href="{% url 'product_detail' product.slug %}"
+                            >
+                                {{ product.name }}
+                            </a>
+
+                        </h3>
+
+                        <div class="product-price">
+                            From {{ product.base_price }} BDT
+                        </div>
+
+                        <a
+                            href="{% url 'product_detail' product.slug %}"
+                            class="btn btn-dark"
+                        >
+                            View Product
+                        </a>
+
+                    </div>
+
+                </article>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endif %}
+
+{% endblock %}

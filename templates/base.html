@@ -1,0 +1,151 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% load static %}
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+        {% block title %}UniversalShop{% endblock %}
+    </title>
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+
+<header class="header">
+
+    <div class="container navbar">
+
+        <a href="{% url 'home' %}" class="brand">
+            Universal<span>Shop</span>
+        </a>
+
+        <nav class="navigation">
+
+            <a href="{% url 'home' %}">Home</a>
+
+            <a href="{% url 'product_list' %}">Shop</a>
+
+            <a href="/cart/">Cart</a>
+
+            {% if user.is_authenticated %}
+
+                <a href="{% url 'account' %}">Account</a>
+
+                <a href="{% url 'logout' %}" class="nav-cta">
+                    Logout
+                </a>
+
+            {% else %}
+
+                <a href="{% url 'login' %}">Login</a>
+
+                <a href="{% url 'register' %}" class="nav-cta">
+                    Sign Up
+                </a>
+
+            {% endif %}
+
+        </nav>
+
+    </div>
+
+</header>
+
+
+{% if messages %}
+
+<div class="container messages">
+
+    {% for message in messages %}
+
+        <div class="message">
+            {{ message }}
+        </div>
+
+    {% endfor %}
+
+</div>
+
+{% endif %}
+
+
+<main>
+
+    {% block content %}
+    {% endblock %}
+
+</main>
+
+
+<footer class="footer">
+
+    <div class="container footer-grid">
+
+        <div>
+            <a href="{% url 'home' %}" class="brand footer-brand">
+                Universal<span>Shop</span>
+            </a>
+
+            <p>
+                A modern ecommerce platform designed
+                for businesses of every kind.
+            </p>
+        </div>
+
+        <div>
+            <h4>Shop</h4>
+
+            <a href="{% url 'product_list' %}">
+                All Products
+            </a>
+
+            <a href="#">
+                Categories
+            </a>
+
+            <a href="#">
+                Featured
+            </a>
+        </div>
+
+        <div>
+            <h4>Account</h4>
+
+            <a href="{% url 'account' %}">
+                My Account
+            </a>
+
+            <a href="#">
+                Orders
+            </a>
+
+            <a href="#">
+                Help
+            </a>
+        </div>
+
+    </div>
+
+    <div class="container footer-bottom">
+
+        <span>
+            © 2026 UniversalShop
+        </span>
+
+        <span>
+            Built with Django
+        </span>
+
+    </div>
+
+</footer>
+
+</body>
+</html>
