@@ -1,0 +1,185 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/address.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="address-form-page">
+
+    <div class="address-form-container">
+
+        <!-- HEADER -->
+
+        <div class="address-form-header">
+
+            <span class="addresses-label">
+                ACCOUNT
+            </span>
+
+            <h1>{{ page_title }}</h1>
+
+            <p>
+                Add your delivery information below.
+            </p>
+
+        </div>
+
+
+        <!-- FORM -->
+
+        <form method="post" class="address-form">
+
+            {% csrf_token %}
+
+
+            {% if form.non_field_errors %}
+
+                <div class="address-form-errors">
+                    {{ form.non_field_errors }}
+                </div>
+
+            {% endif %}
+
+
+            <!-- FULL NAME -->
+
+            <div class="address-field">
+
+                <label for="{{ form.full_name.id_for_label }}">
+                    Full Name
+                </label>
+
+                {{ form.full_name }}
+
+                {% if form.full_name.errors %}
+                    <div class="address-field-error">
+                        {{ form.full_name.errors }}
+                    </div>
+                {% endif %}
+
+            </div>
+
+
+            <!-- PHONE -->
+
+            <div class="address-field">
+
+                <label for="{{ form.phone.id_for_label }}">
+                    Phone Number
+                </label>
+
+                {{ form.phone }}
+
+                {% if form.phone.errors %}
+                    <div class="address-field-error">
+                        {{ form.phone.errors }}
+                    </div>
+                {% endif %}
+
+            </div>
+
+
+            <!-- ADDRESS -->
+
+            <div class="address-field">
+
+                <label for="{{ form.address_line.id_for_label }}">
+                    Address
+                </label>
+
+                {{ form.address_line }}
+
+                {% if form.address_line.errors %}
+                    <div class="address-field-error">
+                        {{ form.address_line.errors }}
+                    </div>
+                {% endif %}
+
+            </div>
+
+
+            <!-- CITY + POSTAL -->
+
+            <div class="address-form-row">
+
+                <div class="address-field">
+
+                    <label for="{{ form.city.id_for_label }}">
+                        City
+                    </label>
+
+                    {{ form.city }}
+
+                    {% if form.city.errors %}
+                        <div class="address-field-error">
+                            {{ form.city.errors }}
+                        </div>
+                    {% endif %}
+
+                </div>
+
+
+                <div class="address-field">
+
+                    <label for="{{ form.postal_code.id_for_label }}">
+                        Postal Code
+                    </label>
+
+                    {{ form.postal_code }}
+
+                    {% if form.postal_code.errors %}
+                        <div class="address-field-error">
+                            {{ form.postal_code.errors }}
+                        </div>
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+            <!-- DEFAULT -->
+
+            <label class="address-default-option">
+
+                {{ form.is_default }}
+
+                <span>
+                    Set this as my default address
+                </span>
+
+            </label>
+
+
+            <!-- BUTTONS -->
+
+            <div class="address-form-actions">
+
+                <a
+                    href="{% url 'address_list' %}"
+                    class="address-cancel-button"
+                >
+                    Cancel
+                </a>
+
+                <button
+                    type="submit"
+                    class="address-save-button"
+                >
+                    {{ button_text }}
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

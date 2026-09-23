@@ -1,7 +1,12 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}
     Checkout — UniversalShop
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/checkout.css' %}">
 {% endblock %}
 
 
@@ -38,28 +43,126 @@
 
             <!-- LEFT -->
 
-            <div class="checkout-main">
+            <section class="checkout-section">
 
+                <div class="checkout-section-header">
 
-                <!-- ADDRESS -->
-
-                <div class="checkout-card">
-
-                    <div class="checkout-card-header">
+                    <div>
+                        <span class="checkout-section-number">
+                            01
+                        </span>
 
                         <div>
+                            <h2>Delivery Address</h2>
 
-                            <span class="checkout-step">
-                                01
-                            </span>
-
-                            <h2>
-                                Delivery information
-                            </h2>
-
+                            <p>
+                                Select where you want your order delivered.
+                            </p>
                         </div>
+                    </div>
+
+                    <a
+                        href="{% url 'address_create' %}"
+                        class="checkout-add-address"
+                    >
+                        + Add Address
+                    </a>
+
+                </div>
+
+
+                {% if addresses %}
+
+                    <div class="checkout-address-list">
+
+                        {% for address in addresses %}
+
+                            <label class="checkout-address-option">
+
+                                <input
+                                    type="radio"
+                                    name="address_id"
+                                    value="{{ address.id }}"
+                                    {% if address.is_default %}
+                                        checked
+                                    {% endif %}
+                                >
+
+                                <div class="checkout-address-content">
+
+                                    <div class="checkout-address-top">
+
+                                        <strong>
+                                            {{ address.full_name }}
+                                        </strong>
+
+                                        {% if address.is_default %}
+
+                                            <span class="checkout-default-badge">
+                                                Default
+                                            </span>
+
+                                        {% endif %}
+
+                                    </div>
+
+                                    <p>
+                                        {{ address.phone }}
+                                    </p>
+
+                                    <p>
+                                        {{ address.address_line }}
+                                    </p>
+
+                                    <p>
+                                        {{ address.city }}
+
+                                        {% if address.postal_code %}
+                                            - {{ address.postal_code }}
+                                        {% endif %}
+                                    </p>
+
+                                </div>
+
+                            </label>
+
+                        {% endfor %}
 
                     </div>
+
+
+                    <div class="checkout-new-address-link">
+
+                        <span>
+                            Want to use a different address?
+                        </span>
+
+                        <a href="{% url 'address_create' %}">
+                            Add a new address
+                        </a>
+
+                    </div>
+
+                {% else %}
+
+                    <div class="checkout-no-address">
+
+                        <p>
+                            You don't have a saved address yet.
+                        </p>
+
+                        <a
+                            href="{% url 'address_create' %}"
+                            class="button button-primary"
+                        >
+                            Add Delivery Address
+                        </a>
+
+                    </div>
+
+                {% endif %}
+
+            </section>
 
 
                     {% if addresses %}

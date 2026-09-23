@@ -1,0 +1,222 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}My Addresses{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/address.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="addresses-page">
+
+    <!-- PAGE HEADER -->
+    <div class="addresses-header">
+
+        <div class="addresses-heading">
+            <span class="addresses-label">ACCOUNT</span>
+
+            <h1>My Addresses</h1>
+
+            <p>
+                Save and manage your delivery addresses.
+            </p>
+        </div>
+
+        <a
+            href="{% url 'address_create' %}"
+            class="addresses-add-button"
+        >
+            <span>+</span>
+            Add Address
+        </a>
+
+    </div>
+
+
+    <!-- ADDRESS LIST -->
+
+    {% if addresses %}
+
+        <div class="addresses-list">
+
+            {% for address in addresses %}
+
+                <div
+                    class="address-box
+                    {% if address.is_default %}
+                        address-box-default
+                    {% endif %}"
+                >
+
+                    <!-- TOP -->
+
+                    <div class="address-box-top">
+
+                        <div class="address-title-area">
+
+                            <div class="address-symbol">
+                                ⌂
+                            </div>
+
+                            <div>
+
+                                <h2>
+                                    {{ address.full_name }}
+                                </h2>
+
+                                {% if address.is_default %}
+
+                                    <span class="default-label">
+                                        DEFAULT
+                                    </span>
+
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- INFORMATION -->
+
+                    <div class="address-information">
+
+                        <div class="address-information-row">
+
+                            <span class="address-information-label">
+                                Phone
+                            </span>
+
+                            <span>
+                                {{ address.phone }}
+                            </span>
+
+                        </div>
+
+
+                        <div class="address-information-row">
+
+                            <span class="address-information-label">
+                                Address
+                            </span>
+
+                            <span>
+                                {{ address.address_line }}
+                            </span>
+
+                        </div>
+
+
+                        <div class="address-information-row">
+
+                            <span class="address-information-label">
+                                City
+                            </span>
+
+                            <span>
+                                {{ address.city }}
+
+                                {% if address.postal_code %}
+                                    — {{ address.postal_code }}
+                                {% endif %}
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ACTIONS -->
+
+                    <div class="address-actions">
+
+                        {% if not address.is_default %}
+
+                            <form
+                                method="post"
+                                action="{% url 'address_set_default' address.id %}"
+                            >
+
+                                {% csrf_token %}
+
+                                <button
+                                    type="submit"
+                                    class="address-button address-button-primary"
+                                >
+                                    Set Default
+                                </button>
+
+                            </form>
+
+                        {% endif %}
+
+
+                        <a
+                            href="{% url 'address_update' address.id %}"
+                            class="address-button"
+                        >
+                            Edit
+                        </a>
+
+
+                        <form
+                            method="post"
+                            action="{% url 'address_delete' address.id %}"
+                            onsubmit="return confirm('Delete this address?');"
+                        >
+
+                            {% csrf_token %}
+
+                            <button
+                                type="submit"
+                                class="address-button address-button-delete"
+                            >
+                                Delete
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <!-- EMPTY STATE -->
+
+        <div class="addresses-empty">
+
+            <div class="addresses-empty-icon">
+                ⌂
+            </div>
+
+            <h2>No saved addresses</h2>
+
+            <p>
+                You haven't added a delivery address yet.
+                Add one to make your checkout process faster.
+            </p>
+
+            <a
+                href="{% url 'address_create' %}"
+                class="addresses-add-button"
+            >
+                Add Your First Address
+            </a>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

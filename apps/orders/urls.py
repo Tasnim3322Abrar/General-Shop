@@ -1,9 +1,16 @@
 from django.urls import path
 
-from .views import checkout
-from .views import order_confirmation
-from .views import order_list
-from .views import order_detail
+from .views import (
+    address_create,
+    address_delete,
+    address_list,
+    address_set_default,
+    address_update,
+    checkout,
+    order_confirmation,
+    order_detail,
+    order_list,
+)
 
 
 urlpatterns = [
@@ -12,6 +19,36 @@ urlpatterns = [
         "checkout/",
         checkout,
         name="checkout",
+    ),
+
+    path(
+        "addresses/",
+        address_list,
+        name="address_list",
+    ),
+
+    path(
+        "addresses/add/",
+        address_create,
+        name="address_create",
+    ),
+
+    path(
+        "addresses/<int:address_id>/edit/",
+        address_update,
+        name="address_update",
+    ),
+
+    path(
+        "addresses/<int:address_id>/delete/",
+        address_delete,
+        name="address_delete",
+    ),
+
+    path(
+        "addresses/<int:address_id>/default/",
+        address_set_default,
+        name="address_set_default",
     ),
 
     path(
@@ -30,5 +67,7 @@ urlpatterns = [
         order_detail,
         name="order_detail",
     ),
+
+
 
 ]
