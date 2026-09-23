@@ -176,34 +176,45 @@
 
                 <!-- ACTION -->
 
-                <div class="detail-actions">
+                <form
+                    method="post"
+                    action="{% url 'add_to_cart' product.variants.first.id %}"
+                    class="detail-actions">
+
+                    {% csrf_token %}
 
                     <div class="quantity-control">
 
-                        <button type="button">
+                        <button
+                            type="button"
+                            onclick="decreaseQuantity()"
+                        >
                             −
                         </button>
 
-                        <span>
+                        <span id="quantity">
                             1
                         </span>
 
-                        <button type="button">
+                        <button
+                            type="button"
+                            onclick="increaseQuantity()"
+                        >
                             +
                         </button>
 
                     </div>
 
 
-                    <a
-                        href="/cart/"
+                    <button
+                        type="submit"
                         class="button button-primary add-cart-button"
                     >
                         Add to Cart
                         <span>→</span>
-                    </a>
+                    </button>
 
-                </div>
+                </form>
 
 
                 <div class="detail-features">

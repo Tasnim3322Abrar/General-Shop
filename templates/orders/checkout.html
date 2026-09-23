@@ -1,0 +1,377 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Checkout — UniversalShop
+{% endblock %}
+
+
+{% block content %}
+
+<section class="checkout-page">
+
+    <div class="container">
+
+        <div class="checkout-header">
+
+            <span class="section-label">
+                CHECKOUT
+            </span>
+
+            <h1>
+                Complete your order
+            </h1>
+
+            <p>
+                Enter your delivery information and review your order.
+            </p>
+
+        </div>
+
+
+        <form
+            method="post"
+            class="checkout-layout"
+        >
+
+            {% csrf_token %}
+
+
+            <!-- LEFT -->
+
+            <div class="checkout-main">
+
+
+                <!-- ADDRESS -->
+
+                <div class="checkout-card">
+
+                    <div class="checkout-card-header">
+
+                        <div>
+
+                            <span class="checkout-step">
+                                01
+                            </span>
+
+                            <h2>
+                                Delivery information
+                            </h2>
+
+                        </div>
+
+                    </div>
+
+
+                    {% if addresses %}
+
+                        <div class="saved-addresses">
+
+                            <h3>
+                                Saved addresses
+                            </h3>
+
+                            {% for address in addresses %}
+
+                                <label class="saved-address">
+
+                                    <input
+                                        type="radio"
+                                        name="address_id"
+                                        value="{{ address.id }}"
+                                    >
+
+                                    <div>
+
+                                        <strong>
+                                            {{ address.full_name }}
+                                        </strong>
+
+                                        <p>
+                                            {{ address.phone }}
+                                        </p>
+
+                                        <p>
+                                            {{ address.address_line }},
+                                            {{ address.city }}
+                                            {% if address.postal_code %}
+                                                - {{ address.postal_code }}
+                                            {% endif %}
+                                        </p>
+
+                                    </div>
+
+                                </label>
+
+                            {% endfor %}
+
+                        </div>
+
+                    {% endif %}
+
+
+                    <div class="new-address">
+
+                        <h3>
+                            {% if addresses %}
+                                Or use a new address
+                            {% else %}
+                                Your address
+                            {% endif %}
+                        </h3>
+
+
+                        {% for field in form %}
+
+                            <div class="checkout-field">
+
+                                <label for="{{ field.id_for_label }}">
+                                    {{ field.label }}
+                                </label>
+
+                                {{ field }}
+
+                                {% for error in field.errors %}
+
+                                    <span class="field-error">
+                                        {{ error }}
+                                    </span>
+
+                                {% endfor %}
+
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                </div>
+
+
+                <!-- DELIVERY -->
+
+                <div class="checkout-card">
+
+                    <div class="checkout-card-header">
+
+                        <div>
+
+                            <span class="checkout-step">
+                                02
+                            </span>
+
+                            <h2>
+                                Delivery method
+                            </h2>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="delivery-options">
+
+                        <label class="delivery-option">
+
+                            <input
+                                type="radio"
+                                name="delivery_method"
+                                value="delivery"
+                                checked
+                            >
+
+                            <div>
+
+                                <strong>
+                                    Home Delivery
+                                </strong>
+
+                                <span>
+                                    Delivery fee: 60 BDT
+                                </span>
+
+                            </div>
+
+                        </label>
+
+
+                        <label class="delivery-option">
+
+                            <input
+                                type="radio"
+                                name="delivery_method"
+                                value="pickup"
+                            >
+
+                            <div>
+
+                                <strong>
+                                    Store Pickup
+                                </strong>
+
+                                <span>
+                                    No delivery fee
+                                </span>
+
+                            </div>
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+
+                <!-- PAYMENT -->
+
+                <div class="checkout-card">
+
+                    <div class="checkout-card-header">
+
+                        <div>
+
+                            <span class="checkout-step">
+                                03
+                            </span>
+
+                            <h2>
+                                Payment
+                            </h2>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="payment-method">
+
+                        <div class="payment-icon">
+                            ৳
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                Cash on Delivery / Pickup
+                            </strong>
+
+                            <span>
+                                Pay when your order is delivered or collected.
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- RIGHT -->
+
+            <aside class="checkout-summary">
+
+                <h2>
+                    Order Summary
+                </h2>
+
+
+                <div class="checkout-products">
+
+                    {% for item in items %}
+
+                        <div class="checkout-product">
+
+                            <div>
+
+                                <strong>
+                                    {{ item.variant.product.name }}
+                                </strong>
+
+                                <span>
+                                    {{ item.variant.name }}
+                                    × {{ item.quantity }}
+                                </span>
+
+                            </div>
+
+                            <strong>
+                                {{ item.subtotal }} BDT
+                            </strong>
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+
+                <div class="summary-divider"></div>
+
+
+                <div class="summary-row">
+
+                    <span>
+                        Subtotal
+                    </span>
+
+                    <span>
+                        {{ cart.subtotal }} BDT
+                    </span>
+
+                </div>
+
+
+                <div class="summary-row">
+
+                    <span>
+                        Delivery
+                    </span>
+
+                    <span>
+                        Calculated at checkout
+                    </span>
+
+                </div>
+
+
+                <div class="summary-divider"></div>
+
+
+                <div class="summary-total">
+
+                    <span>
+                        Total
+                    </span>
+
+                    <strong>
+                        {{ cart.subtotal }} BDT+
+                    </strong>
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="button button-primary place-order-button"
+                >
+                    Place Order →
+                </button>
+
+
+                <a
+                    href="{% url 'cart_detail' %}"
+                    class="back-cart"
+                >
+                    ← Back to Cart
+                </a>
+
+            </aside>
+
+        </form>
+
+    </div>
+
+</section>
+
+{% endblock %}

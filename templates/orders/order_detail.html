@@ -1,0 +1,253 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Order #{{ order.id }} — UniversalShop
+{% endblock %}
+
+
+{% block content %}
+
+<section class="order-detail-page">
+
+    <div class="container">
+
+        <div class="order-detail-header">
+
+            <div>
+
+                <span class="section-label">
+                    ORDER DETAILS
+                </span>
+
+                <h1>
+                    Order #{{ order.id }}
+                </h1>
+
+                <p>
+                    Placed on
+                    {{ order.created_at|date:"d M Y, h:i A" }}
+                </p>
+
+            </div>
+
+
+            <span
+                class="status status-{{ order.status }}"
+            >
+                {{ order.get_status_display }}
+            </span>
+
+        </div>
+
+
+        <div class="order-detail-layout">
+
+
+            <!-- LEFT -->
+
+            <div>
+
+
+                <div class="order-detail-card">
+
+                    <div class="order-card-title">
+
+                        <h2>
+                            Items
+                        </h2>
+
+                        <span>
+                            {{ order.items.count }}
+                            item{{ order.items.count|pluralize }}
+                        </span>
+
+                    </div>
+
+
+                    <div class="order-items">
+
+                        {% for item in order.items.all %}
+
+                            <div class="order-item">
+
+                                <div>
+
+                                    <strong>
+                                        {{ item.product_name }}
+                                    </strong>
+
+                                    {% if item.variant_name %}
+
+                                        <span>
+                                            {{ item.variant_name }}
+                                        </span>
+
+                                    {% endif %}
+
+                                    <span>
+                                        {{ item.quantity }}
+                                        ×
+                                        {{ item.unit_price }}
+                                        BDT
+                                    </span>
+
+                                </div>
+
+
+                                <strong>
+                                    {{ item.subtotal }} BDT
+                                </strong>
+
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                </div>
+
+
+                <div class="order-detail-card">
+
+                    <div class="order-card-title">
+
+                        <h2>
+                            Delivery Information
+                        </h2>
+
+                    </div>
+
+
+                    <div class="order-information">
+
+                        <div>
+
+                            <span>
+                                Delivery method
+                            </span>
+
+                            <strong>
+                                {{ order.get_delivery_method_display }}
+                            </strong>
+
+                        </div>
+
+
+                        <div>
+
+                            <span>
+                                Name
+                            </span>
+
+                            <strong>
+                                {{ order.address.full_name }}
+                            </strong>
+
+                        </div>
+
+
+                        <div>
+
+                            <span>
+                                Phone
+                            </span>
+
+                            <strong>
+                                {{ order.address.phone }}
+                            </strong>
+
+                        </div>
+
+
+                        <div>
+
+                            <span>
+                                Address
+                            </span>
+
+                            <strong>
+                                {{ order.address.address_line }},
+                                {{ order.address.city }}
+
+                                {% if order.address.postal_code %}
+                                    - {{ order.address.postal_code }}
+                                {% endif %}
+
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- RIGHT -->
+
+            <aside class="order-summary-card">
+
+                <h2>
+                    Order Summary
+                </h2>
+
+
+                <div class="summary-row">
+
+                    <span>
+                        Subtotal
+                    </span>
+
+                    <span>
+                        {{ order.subtotal }} BDT
+                    </span>
+
+                </div>
+
+
+                <div class="summary-row">
+
+                    <span>
+                        Delivery
+                    </span>
+
+                    <span>
+                        {{ order.delivery_fee }} BDT
+                    </span>
+
+                </div>
+
+
+                <div class="summary-divider"></div>
+
+
+                <div class="summary-total">
+
+                    <span>
+                        Total
+                    </span>
+
+                    <strong>
+                        {{ order.total }} BDT
+                    </strong>
+
+                </div>
+
+
+                <a
+                    href="{% url 'order_list' %}"
+                    class="back-orders"
+                >
+                    ← Back to Orders
+                </a>
+
+            </aside>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

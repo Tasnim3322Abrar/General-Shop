@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Order Confirmed — UniversalShop
+{% endblock %}
+
+
+{% block content %}
+
+<section class="confirmation-page">
+
+    <div class="confirmation-card">
+
+        <div class="confirmation-icon">
+            ✓
+        </div>
+
+        <span class="section-label">
+            ORDER CONFIRMED
+        </span>
+
+        <h1>
+            Thank you for your order!
+        </h1>
+
+        <p>
+            Your order has been successfully placed.
+        </p>
+
+
+        <div class="confirmation-number">
+
+            <span>
+                Order Number
+            </span>
+
+            <strong>
+                #{{ order.id }}
+            </strong>
+
+        </div>
+
+
+        <div class="confirmation-details">
+
+            <div>
+                <span>Status</span>
+                <strong>{{ order.get_status_display }}</strong>
+            </div>
+
+            <div>
+                <span>Items</span>
+                <strong>{{ order.items.count }}</strong>
+            </div>
+
+            <div>
+                <span>Total</span>
+                <strong>{{ order.total }} BDT</strong>
+            </div>
+
+        </div>
+
+
+        <div class="confirmation-actions">
+
+            <a
+                href="{% url 'product_list' %}"
+                class="button button-primary"
+            >
+                Continue Shopping →
+            </a>
+
+            <a
+                href="{% url 'account' %}"
+                class="button button-secondary"
+            >
+                My Account
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}
