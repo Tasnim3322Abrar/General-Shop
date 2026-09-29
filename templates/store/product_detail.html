@@ -1,7 +1,12 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}
     {{ product.name }} — UniversalShop
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/reviews.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -239,6 +244,242 @@
             </div>
 
         </div>
+
+    </div>
+
+</section>
+
+<section class="reviews-section">
+
+    <div class="reviews-header">
+
+        <div>
+            <span class="reviews-label">
+                CUSTOMER FEEDBACK
+            </span>
+
+            <h2>Reviews & Ratings</h2>
+
+            <p>
+                See what customers think about this product.
+            </p>
+        </div>
+
+    </div>
+
+
+    <div class="reviews-summary">
+
+        <div class="reviews-score">
+
+            <strong>
+                {{ product.average_rating|default:"0"|floatformat:1 }}
+            </strong>
+
+            <div class="reviews-stars">
+                ★★★★★
+            </div>
+
+            <span>
+                {{ product.review_count|default:"0" }} reviews
+            </span>
+
+        </div>
+
+    </div>
+
+
+    {% if user.is_authenticated %}
+
+        {% if can_review and not user_reviewed %}
+
+            <div class="review-form-card">
+
+                <h3>
+                    Write a Review
+                </h3>
+
+                <form
+                    method="post"
+                    action="{% url 'add_review' product.id %}"
+                >
+
+                    {% csrf_token %}
+
+                    <div class="review-field">
+
+                        <label>
+                            Rating
+                        </label>
+
+                        <select name="rating" required>
+
+                            <option value="">
+                                Select rating
+                            </option>
+
+                            <option value="5">
+                                ★★★★★ - Excellent
+                            </option>
+
+                            <option value="4">
+                                ★★★★☆ - Very Good
+                            </option>
+
+                            <option value="3">
+                                ★★★☆☆ - Good
+                            </option>
+
+                            <option value="2">
+                                ★★☆☆☆ - Fair
+                            </option>
+
+                            <option value="1">
+                                ★☆☆☆☆ - Poor
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="review-field">
+
+                        <label>
+                            Title
+                        </label>
+
+                        <input
+                            type="text"
+                            name="title"
+                            placeholder="Review title"
+                            maxlength="150"
+                        >
+
+                    </div>
+
+
+                    <div class="review-field">
+
+                        <label>
+                            Your Review
+                        </label>
+
+                        <textarea
+                            name="comment"
+                            rows="5"
+                            placeholder="Write your review..."
+                            required
+                        ></textarea>
+
+                    </div>
+
+
+                    <button
+                        type="submit"
+                        class="review-submit-button"
+                    >
+                        Submit Review
+                    </button>
+
+                </form>
+
+            </div>
+
+        {% else %}
+
+            <div class="review-already-submitted">
+
+                You have already reviewed this product.
+
+            </div>
+
+        {% endif %}
+
+    {% else %}
+
+        <div class="review-login-message">
+
+            Please
+            <a href="{% url 'login' %}?next={{ request.path }}">
+                login
+            </a>
+            to write a review.
+
+        </div>
+
+    {% endif %}
+
+
+    <div class="reviews-list">
+
+        {% for review in product.reviews.all %}
+
+            {% if review.is_approved %}
+
+                <article class="review-card">
+
+                    <div class="review-card-header">
+
+                        <div>
+
+                            <strong>
+                                {{ review.user.username }}
+                            </strong>
+
+                            <span class="verified-purchase">
+                                ✓ Verified Purchase
+                            </span>
+
+                            <div class="review-stars">
+                                {% if review.rating >= 1 %}★{% endif %}
+                                {% if review.rating >= 2 %}★{% endif %}
+                                {% if review.rating >= 3 %}★{% endif %}
+                                {% if review.rating >= 4 %}★{% endif %}
+                                {% if review.rating >= 5 %}★{% endif %}
+                            </div>
+
+                        </div>
+
+                        <time>
+                            {{ review.created_at|date:"M d, Y" }}
+                        </time>
+
+                    </div>
+
+
+                    {% if review.title %}
+
+                        <h3>
+                            {{ review.title }}
+                        </h3>
+
+                    {% endif %}
+
+
+                    <p>
+                        {{ review.comment }}
+                    </p>
+
+                </article>
+
+            {% endif %}
+
+        {% empty %}
+
+            <div class="reviews-empty">
+
+                <h3>
+                    No reviews yet
+                </h3>
+
+                <p>
+                    Be the first customer to review this product.
+                </p>
+
+            </div>
+
+        {% endfor %}
 
     </div>
 

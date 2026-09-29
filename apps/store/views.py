@@ -1,6 +1,9 @@
 from django.core.paginator import Paginator
-from django.db.models import Q
+from django.db.models import Avg, Count, Prefetch, Q
 from django.shortcuts import get_object_or_404, render
+
+from apps.reviews.models import Review
+from apps.orders.models import OrderItem
 
 from .models import Product, Category, Brand
 
@@ -133,22 +136,61 @@ def product_list(request):
 def product_detail(request, slug):
     product = get_object_or_404(
         Product.objects
-        .select_related(
-            "category",
-            "brand"
-        )
+        .select_related("category", "brand")
         .prefetch_related(
             "images",
-            "variants__inventory"
+            "variants__inventory",
+            Prefetch(
+                "reviews",
+                queryset=Review.objects.filter(
+                    is_approved=True
+                ).select_related("user"),
+            ),
+        )
+        .annotate(
+            average_rating=Avg(
+                "reviews__rating",
+                filter=Q(reviews__is_approved=True),
+            ),
+            review_count=Count(
+                "reviews",
+                filter=Q(reviews__is_approved=True),
+            ),
         ),
         slug=slug,
-        is_active=True
+        is_active=True,
     )
+
+    user_reviewed = False
+    can_review = False
+
+    if request.user.is_authenticated:
+
+        # Check whether the user has already reviewed this product
+        user_reviewed = Review.objects.filter(
+            product=product,
+            user=request.user,
+        ).exists()
+
+        # Check whether the user purchased this product
+        if not user_reviewed:
+            can_review = OrderItem.objects.filter(
+                order__user=request.user,
+                variant__product=product,
+                order__status__in=[
+                    "confirmed",
+                    "processing",
+                    "shipped",
+                    "delivered",
+                ],
+            ).exists()
 
     return render(
         request,
         "store/product_detail.html",
         {
-            "product": product
-        }
+            "product": product,
+            "user_reviewed": user_reviewed,
+            "can_review": can_review,
+        },
     )

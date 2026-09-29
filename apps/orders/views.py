@@ -9,6 +9,7 @@ from django.shortcuts import render
 from django.views.decorators.http import require_POST
 
 from apps.cart.services import get_or_create_cart
+from apps.payments.models import Payment
 
 from .forms import AddressForm
 from .models import Address
@@ -158,11 +159,26 @@ def checkout(request):
             )
 
             # ---------------------------------
+            # CREATE PAYMENT
+            # ---------------------------------
+
+            if delivery_method == "delivery":
+                payment_method = "cod"
+            else:
+                payment_method = "cash_pickup"
+
+            Payment.objects.create(
+                order=order,
+                amount=total,
+                method=payment_method,
+                status="pending",
+            )
+
+            # ---------------------------------
             # CREATE ORDER ITEMS
             # ---------------------------------
 
             for item in items:
-
                 OrderItem.objects.create(
                     order=order,
                     variant=item.variant,
@@ -171,8 +187,8 @@ def checkout(request):
                     quantity=item.quantity,
                     unit_price=item.variant.price,
                     subtotal=(
-                        item.variant.price
-                        * item.quantity
+                            item.variant.price
+                            * item.quantity
                     ),
                 )
 
