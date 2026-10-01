@@ -8,6 +8,11 @@ from apps.store.models import ProductVariant
 from .models import CartItem
 from .services import get_or_create_cart
 
+from decimal import Decimal
+
+from apps.coupons.cart import get_applied_coupon
+from apps.coupons.services import calculate_final_total
+
 
 def cart_detail(request):
 
@@ -24,13 +29,39 @@ def cart_detail(request):
         )
     )
 
+    # Calculate subtotal
+    subtotal = Decimal("0.00")
+
+    for item in items:
+        subtotal += (
+            item.variant.price * item.quantity
+        )
+
+    # Get applied coupon
+    coupon, discount = get_applied_coupon(
+        request,
+        subtotal,
+    )
+
+    # Calculate final price
+    final_total = calculate_final_total(
+        subtotal,
+        discount,
+    )
+
+    context = {
+        "cart": cart,
+        "items": items,
+        "subtotal": subtotal,
+        "coupon": coupon,
+        "discount": discount,
+        "final_total": final_total,
+    }
+
     return render(
         request,
         "cart/cart_detail.html",
-        {
-            "cart": cart,
-            "items": items,
-        },
+        context,
     )
 
 
@@ -74,7 +105,6 @@ def add_to_cart(request, variant_id):
             "quantity": 1,
         },
     )
-
 
     if not created:
 
