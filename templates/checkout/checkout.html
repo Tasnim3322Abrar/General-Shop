@@ -1,0 +1,333 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Checkout — UniversalShop
+{% endblock %}
+
+{% block content %}
+
+<section class="checkout-page">
+
+    <div class="container">
+
+        <div class="checkout-header">
+
+            <span class="section-label">
+                CHECKOUT
+            </span>
+
+            <h1>
+                Complete Your Order
+            </h1>
+
+            <p>
+                Review your order details before placing your order.
+            </p>
+
+        </div>
+
+
+        <div class="checkout-layout">
+
+
+            <!-- ============================= -->
+            <!-- CUSTOMER INFORMATION -->
+            <!-- ============================= -->
+
+            <div class="checkout-main">
+
+                <div class="checkout-card">
+
+                    <h2>
+                        Delivery Information
+                    </h2>
+
+                    <p>
+                        Your saved addresses will appear here.
+                    </p>
+
+                    <a
+                        href="{% url 'address_list' %}"
+                        class="button button-secondary"
+                    >
+                        Manage Addresses
+                    </a>
+
+                </div>
+
+
+                <!-- ============================= -->
+                <!-- PAYMENT METHOD -->
+                <!-- ============================= -->
+
+                <div class="checkout-card">
+
+                    <div class="checkout-card-header">
+
+                        <div>
+                            <span class="section-label">
+                                DELIVERY
+                            </span>
+
+                            <h2>
+                                Delivery Address
+                            </h2>
+                        </div>
+
+                        <a
+                            href="{% url 'address_create' %}"
+                            class="button button-secondary"
+                        >
+                            + Add New Address
+                        </a>
+
+                    </div>
+
+
+                    {% if addresses %}
+
+                        <form
+                            method="post"
+                            class="address-selection-form"
+                        >
+
+                            {% csrf_token %}
+
+
+                            <div class="checkout-address-list">
+
+                                {% for address in addresses %}
+
+                                    <label
+                                        class="checkout-address-option
+                                        {% if selected_address.id == address.id %}
+                                            selected
+                                        {% endif %}"
+                                    >
+
+                                        <input
+                                            type="radio"
+                                            name="address_id"
+                                            value="{{ address.id }}"
+                                            {% if selected_address.id == address.id %}
+                                                checked
+                                            {% endif %}
+                                            onchange="this.form.submit()"
+                                        >
+
+
+                                        <div class="address-option-content">
+
+                                            <div class="address-option-header">
+
+                                                <strong>
+                                                    {{ address.full_name }}
+                                                </strong>
+
+                                                {% if address.is_default %}
+
+                                                    <span class="default-badge">
+                                                        Default
+                                                    </span>
+
+                                                {% endif %}
+
+                                            </div>
+
+
+                                            <p>
+                                                {{ address.address_line }}
+                                            </p>
+
+<!--                                            {% if address.address_line_2 %}-->
+
+<!--                                                <p>-->
+<!--                                                    {{ address.address_line_2 }}-->
+<!--                                                </p>-->
+
+<!--                                            {% endif %}-->
+
+
+                                            <p>
+                                                {{ address.city }},
+                                                {{ address.postal_code }}
+                                            </p>
+
+
+                                            <p>
+                                                {{ address.phone }}
+                                            </p>
+
+                                        </div>
+
+                                    </label>
+
+                                {% endfor %}
+
+                            </div>
+
+                        </form>
+
+                    {% else %}
+
+                        <div class="no-address">
+
+                            <p>
+                                You don't have a delivery address yet.
+                            </p>
+
+                            <a
+                                href="{% url 'address_create' %}"
+                                class="button button-primary"
+                            >
+                                Add Delivery Address
+                            </a>
+
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+            <!-- ============================= -->
+            <!-- ORDER SUMMARY -->
+            <!-- ============================= -->
+
+            <aside class="checkout-summary">
+
+                <h2>
+                    Your Order
+                </h2>
+
+
+                {% for item in items %}
+
+                    <div class="checkout-item">
+
+                        <div>
+
+                            <strong>
+                                {{ item.variant.product.name }}
+                            </strong>
+
+                            <span>
+                                {{ item.variant.name }}
+                                × {{ item.quantity }}
+                            </span>
+
+                        </div>
+
+                        <strong>
+                            ৳{{ item.subtotal|floatformat:2 }}
+                        </strong>
+
+                    </div>
+
+                {% endfor %}
+
+
+                <div class="summary-divider"></div>
+
+
+                <div class="summary-row">
+
+                    <span>
+                        Subtotal
+                    </span>
+
+                    <span>
+                        ৳{{ subtotal|floatformat:2 }}
+                    </span>
+
+                </div>
+
+
+                {% if coupon %}
+
+                    <div class="summary-row">
+
+                        <span>
+                            Coupon ({{ coupon.code }})
+                        </span>
+
+                        <span>
+                            -৳{{ discount|floatformat:2 }}
+                        </span>
+
+                    </div>
+
+                {% endif %}
+
+
+                <div class="summary-divider"></div>
+
+
+                <div class="summary-total">
+
+                    <span>
+                        Total
+                    </span>
+
+                    <strong>
+                        ৳{{ final_total|floatformat:2 }}
+                    </strong>
+
+                </div>
+
+
+                <!-- PLACE ORDER WILL BE ADDED NEXT -->
+
+                {% if selected_address %}
+
+                    <form method="post" action="{% url 'checkout' %}">
+
+                        {% csrf_token %}
+
+                        <input
+                            type="hidden"
+                            name="address_id"
+                            value="{{ selected_address.id }}"
+                        >
+
+                        <button
+                            type="submit"
+                            name="place_order"
+                            value="1"
+                            class="button button-primary checkout-button"
+                        >
+                            Place Order →
+                        </button>
+
+                    </form>
+
+                {% else %}
+
+                    <button
+                        type="button"
+                        class="button button-primary checkout-button"
+                        disabled
+                    >
+                        Select Delivery Address
+                    </button>
+
+                {% endif %}
+
+                <a
+                    href="{% url 'cart_detail' %}"
+                    class="continue-shopping"
+                >
+                    ← Back to Cart
+                </a>
+
+            </aside>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

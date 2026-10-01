@@ -3391,3 +3391,69 @@ img {
     }
 
 }
+
+.checkout-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 24px;
+}
+
+.checkout-address-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.checkout-address-option {
+    display: flex;
+    gap: 16px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.checkout-address-option:hover {
+    border-color: #999;
+}
+
+.checkout-address-option.selected {
+    border-color: #111;
+}
+
+.checkout-address-option input {
+    margin-top: 5px;
+}
+
+.address-option-content {
+    flex: 1;
+}
+
+.address-option-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.address-option-content p {
+    margin: 4px 0;
+}
+
+.default-badge {
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    background: #eee;
+}
+
+.no-address {
+    padding: 30px;
+    text-align: center;
+    border: 1px dashed #ccc;
+    border-radius: 12px;
+}
